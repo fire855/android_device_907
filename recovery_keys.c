@@ -28,9 +28,7 @@ int device_handle_key(int key_code, int visible) {
 	    case 158:
 	    case KEY_1:
             case KEY_ESC:
-                if (ui_menu_level > 0) {
-                    return GO_BACK;
-                }
+                return GO_BACK;
         }
     }
 
