@@ -105,6 +105,7 @@ PRODUCT_PACKAGES += \
 	gralloc.sun4i \
 	display.sun4i \
 	hwcomposer.exDroid \
+	sensors.exDroid \
 	lights.sun4i \
 	gps.sun4i \
 	audio.primary.exDroid \

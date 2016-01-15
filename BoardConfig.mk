@@ -94,3 +94,10 @@ endif
 TARGET_PREBUILT_KERNEL := device/softwinner/907/kernel
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_CMDLINE := console=ttyS0,115200 rw init=/init loglevel=8
+
+# G-Sensor Stuff
+SW_BOARD_USES_GSENSOR_TYPE := mma8452
+SW_BOARD_GSENSOR_DIRECT_X  := false
+SW_BOARD_GSENSOR_DIRECT_Y  := true
+SW_BOARD_GSENSOR_DIRECT_Z  := true
+SW_BOARD_GSENSOR_XY_REVERT := false
