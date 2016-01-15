@@ -13,9 +13,9 @@
 # limitations under the License.
 
 # Update Me
-PRODUCT_COPY_FILES += \
-	device/softwinner/907/prebuilt/app/UpdateMe.apk:system/app/UpdateMe.apk \
-	device/softwinner/907/prebuilt/update_me.xml:system/update_me.xml
+#PRODUCT_COPY_FILES += \
+#	device/softwinner/907/prebuilt/app/UpdateMe.apk:system/app/UpdateMe.apk \
+#	device/softwinner/907/prebuilt/update_me.xml:system/update_me.xml
 
 # /system/bin
 PRODUCT_COPY_FILES += \
@@ -66,6 +66,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/softwinner/907/prebuilt/usr/idc/ft5x_ts.idc:system/usr/idc/ft5x_ts.idc \
 	device/softwinner/907/prebuilt/usr/idc/Goodix-TS-board-3.idc:system/usr/idc/Goodix-TS-board-3.idc \
+	device/softwinner/907/prebuilt/usr/idc/ssd253x_ts.idc:system/usr/idc/ssd253x_ts.idc \
 	device/softwinner/907/prebuilt/usr/keylayout/axp20-supplyer.kl:system/usr/keylayout/axp20-supplyer.kl \
 	device/softwinner/907/prebuilt/usr/keylayout/sun4i-keyboard.kl:system/usr/keylayout/sun4i-keyboard.kl
 
