@@ -440,6 +440,9 @@ static int set_route_by_array(struct mixer *mixer, struct route_setting *route,
             }
         }
         i++;
+
+        // 5 is the maximum number of default routes (0-4)
+        if (i > 4) break;
     }
 
     return 0;
@@ -876,39 +879,6 @@ static int start_output_stream(struct sun4i_stream_out *out)
         out->config.rate = MM_44100_SAMPLING_RATE;
         LOGV("### HDMI audio out selected! Sampling rate: %d Hz", out->config.rate);
     }
-    /* HACK: USB DAC output */
-    else if(is_device_usb_dac()) {
-    	char property[PROPERTY_VALUE_MAX];
-        property_get(OUT_CARD_CID_PROPERTY, property, OUT_CARD_CID); 
-        /* property value: pcmC[4]D[6]p */
-    	card = property[4] - '0';
-    	port = property[6] - '0';
-    	/* init mixer controls, creative sb live doesn't work without it */
-    	adev->mixer = mixer_open(card);
-        /* HW Info (failsafe check) */
-        struct pcm_config config;
-        struct pcm *pcm;
-    	pcm = pcm_hwinfo(card, port, PCM_OUT, &config);
-    	if (!pcm || !pcm_is_ready(pcm)) {
-      		LOGE("### Unable to get Hardware information for device %s (%s)\n",
-              property, pcm_get_error(pcm));
-      	goto exit;
-    	}
-        LOGV("# Supported Rates: (%uHz - %uHz)\n", config.rate_min, config.rate_max);
-        LOGV("# Supported Channels: (%uCh - %uCh)\n", config.channels_min, config.channels_max);
-        /* Define preferred rate */                
-    	property_get(OUT_CARD_FREQ_PROPERTY, property, "44100"); 	
-    	out->config.rate = atoi(property);
-        if (!(out->config.rate >= config.rate_min &&
-                  out->config.rate <= config.rate_max)) {
-            LOGV("# Requested %dHz using supported value %dHz\n",out->config.rate, config.rate_max);
-            out->config.rate = config.rate_max;
-    	}
-    	pcm_close(pcm);
-        /* END of HW Info */
-        LOGV("### USB audio out selected! Channels: %dCh Sampling rate: %dHz", out->config.channels, out->config.rate);
-    }
-exit:
     /* default to low power: will be corrected in out_write if necessary before first write to
      * tinyalsa.
      */
@@ -1365,45 +1335,6 @@ static int start_input_stream(struct sun4i_stream_in *in)
                                         AUDIO_FORMAT_PCM_16_BIT,
                                         in->config.channels,
                                         in->requested_rate);
-    /* HACK: USB DAC input */
-    if(is_device_usb_cap()) {
-    	char property[PROPERTY_VALUE_MAX];
-        property_get(CAP_CARD_CID_PROPERTY, property, CAP_CARD_CID); 
-        /* property value: pcmC[4]D[6]c */
-    	card = property[4] - '0';
-    	port = property[6] - '0';
-    	/* init mixer controls, creative sb live doesn't work without it */
-    	adev->mixer = mixer_open(card);
-        LOGV("# card: %u, port: %u, type: capture", card, port);
-        /* HW Info (failsafe check) */
-        struct pcm_config config;
-        struct pcm *pcm;
-    	pcm = pcm_hwinfo(card, port, PCM_IN, &config);
-    	if (!pcm || !pcm_is_ready(pcm)) {
-      		LOGE("### Unable to get Hardware information for device %s (%s)\n",
-              property, pcm_get_error(pcm));
-      	goto exit;
-    	}
-        LOGV("# Supported Rates: (%uHz - %uHz)\n", config.rate_min, config.rate_max);
-        LOGV("# Supported Channels: (%uCh - %uCh)\n", config.channels_min, config.channels_max);
-        /* Define preferred capture rate */
-    	property_get(CAP_CARD_FREQ_PROPERTY, property, "44100"); 	
-    	in->config.rate = atoi(property);
-        if (!(in->config.rate >= config.rate_min &&
-                  in->config.rate<= config.rate_max)) {
-            LOGV("# Requested %dHz, using supported value %dHz\n",in->config.rate, config.rate_min);
-            in->config.rate = config.rate_min;
-    	}
-        if (!(in->config.channels >= config.channels_min &&
-                  in->config.channels <= config.channels_max)) {
-            LOGV("# Requested %dCh, using supported value %dCh\n",in->config.channels, config.channels_min);
-            in->config.channels = config.channels_min;
-    	}
-    	pcm_close(pcm);
-        /* END of HW Info */
-        LOGV("### USB audio input selected! Channels: %dCh Req Rate: %dHz HW Rate: %dHz", in->config.channels, in->requested_rate, in->config.rate);
-    }
-exit:	
     /* this assumes routing is done previously */
     in->pcm = pcm_open(card, port, PCM_IN, &in->config);
     if (!pcm_is_ready(in->pcm)) {
@@ -2396,6 +2327,7 @@ static int adev_open(const hw_module_t* module, const char* name,
         LOGE("Unable to open the mixer, aborting.");
         return -EINVAL;
     }
+
     adev->mixer_ctls.master_vol = mixer_get_ctl_by_name(adev->mixer,
                                            MIXER_MASTER_PLAYBACK_VOLUME);
     adev->mixer_ctls.playback_sw = mixer_get_ctl_by_name(adev->mixer,
