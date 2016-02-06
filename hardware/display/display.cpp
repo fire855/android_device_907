@@ -2475,12 +2475,12 @@ static int display_init(struct display_context_t* ctx)
         return -1;
     } 
 
-    /*ctx->mFD_mp                     = open("/dev/g2d", O_RDWR, 0);
+    ctx->mFD_mp = open("/dev/g2d", O_RDWR, 0);
     if(ctx->mFD_mp < 0)
     {
         ALOGE("Error opening g2d driver");
         return -1;
-    }*/
+    }
 
     for(i=0; i<MAX_DISPLAY_NUM; i++)
     {
