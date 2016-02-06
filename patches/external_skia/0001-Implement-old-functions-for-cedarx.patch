@@ -1,0 +1,79 @@
+From 905e5b8380f32be3ae061dd2dcad6afb71aeba7c Mon Sep 17 00:00:00 2001
+From: fire855 <thefire855@gmail.com>
+Date: Sat, 6 Feb 2016 00:53:57 +0100
+Subject: [PATCH] Implement old functions for cedarx
+
+Change-Id: Ie7ce4def5450724ba5e59b60e3c81d2d76bfd90b
+---
+ include/core/SkCanvas.h | 6 ++++++
+ include/core/SkPaint.h  | 1 +
+ src/core/SkCanvas.cpp   | 6 ++++++
+ src/core/SkPaint.cpp    | 6 ++++++
+ 4 files changed, 19 insertions(+)
+
+diff --git a/include/core/SkCanvas.h b/include/core/SkCanvas.h
+index 5a5cc65..6226b17 100644
+--- a/include/core/SkCanvas.h
++++ b/include/core/SkCanvas.h
+@@ -100,6 +100,12 @@ public:
+      *        sometimes.
+      */
+     SkBaseDevice* getTopDevice(bool updateMatrixClip = false) const;
++	
++    /**
++     *  Create a new raster device and make it current. This also returns
++     *  the new device.
++     */
++    SkBaseDevice* setBitmapDevice(const SkBitmap& bitmap);
+ 
+     /**
+      *  Shortcut for getDevice()->createCompatibleDevice(...).
+diff --git a/include/core/SkPaint.h b/include/core/SkPaint.h
+index 0dffa58..da77e78 100644
+--- a/include/core/SkPaint.h
++++ b/include/core/SkPaint.h
+@@ -1067,6 +1067,7 @@ private:
+                           int* count, SkRect* bounds) const;
+ 
+     SkGlyphCache* detachCache(const SkDeviceProperties* deviceProperties, const SkMatrix*) const;
++	SkGlyphCache* detachCache(const SkMatrix*) const;
+ 
+     void descriptorProc(const SkDeviceProperties* deviceProperties, const SkMatrix* deviceMatrix,
+                         void (*proc)(SkTypeface*, const SkDescriptor*, void*),
+diff --git a/src/core/SkCanvas.cpp b/src/core/SkCanvas.cpp
+index 5609372..22586df 100644
+--- a/src/core/SkCanvas.cpp
++++ b/src/core/SkCanvas.cpp
+@@ -653,6 +653,12 @@ SkBaseDevice* SkCanvas::setDevice(SkBaseDevice* device) {
+     return device;
+ }
+ 
++SkBaseDevice* SkCanvas::setBitmapDevice(const SkBitmap& bitmap) {
++    SkBaseDevice* device = this->setDevice(SkNEW_ARGS(SkBitmapDevice, (bitmap)));
++    device->unref();
++    return device;
++}
++
+ bool SkCanvas::readPixels(SkBitmap* bitmap,
+                           int x, int y,
+                           Config8888 config8888) {
+diff --git a/src/core/SkPaint.cpp b/src/core/SkPaint.cpp
+index 71199c7..1b549c0 100644
+--- a/src/core/SkPaint.cpp
++++ b/src/core/SkPaint.cpp
+@@ -2130,6 +2130,12 @@ SkGlyphCache* SkPaint::detachCache(const SkDeviceProperties* deviceProperties,
+     return cache;
+ }
+ 
++SkGlyphCache* SkPaint::detachCache(const SkMatrix* deviceMatrix) const {
++    SkGlyphCache* cache;
++    this->descriptorProc(NULL, deviceMatrix, DetachDescProc, &cache, false);
++    return cache;
++}
++
+ /**
+  * Expands fDeviceGamma, fPaintGamma, fContrast, and fLumBits into a mask pre-blend.
+  */
+-- 
+2.5.0
+
