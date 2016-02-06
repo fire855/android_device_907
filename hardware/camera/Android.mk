@@ -15,7 +15,8 @@ LOCAL_SHARED_LIBRARIES:= \
 # cedarx libraries
 LOCAL_SHARED_LIBRARIES += \
 	libfacedetection \
-	libjpgenc \
+	libcedarxosal \
+	libCedarX
 	
 LOCAL_C_INCLUDES += 						\
 	frameworks/base/core/jni/android/graphics 		\
