@@ -32,7 +32,7 @@ index a953536..044ed62 100644
 +    AUDIO_DEVICE_IN_AF                    = AUDIO_DEVICE_BIT_IN | 0x1000000,
      AUDIO_DEVICE_IN_ANC_HEADSET           = AUDIO_DEVICE_BIT_IN | 0x2000,
      AUDIO_DEVICE_IN_PROXY                 = AUDIO_DEVICE_BIT_IN | 0x4000,
- #ifdef QCOM_HARDWARE
+ #ifdef MTK_HARDWARE
 @@ -516,6 +519,7 @@ enum {
                                 AUDIO_DEVICE_IN_DGTL_DOCK_HEADSET |
                                 AUDIO_DEVICE_IN_USB_ACCESSORY |
@@ -40,7 +40,7 @@ index a953536..044ed62 100644
 +                               AUDIO_DEVICE_IN_AF |
                                 AUDIO_DEVICE_IN_PROXY |
                                 AUDIO_DEVICE_IN_ANC_HEADSET |
- #ifdef QCOM_HARDWARE
+ #ifdef MTK_HARDWARE
 diff --git a/include/system/camera.h b/include/system/camera.h
 index 9cc8286..8a87422 100644
 --- a/include/system/camera.h
