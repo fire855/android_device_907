@@ -17,7 +17,7 @@ COMMON_PATH := device/softwinner/907
 
 PRODUCT_COPY_FILES := \
 	$(COMMON_PATH)/kernel:kernel \
-        $(COMMON_PATH)/prebuilt/lib/modules/ft5x_ts.ko:root/lib/modules/ft5x_ts.ko \
+	$(COMMON_PATH)/prebuilt/lib/modules/ft5x_ts.ko:root/lib/modules/ft5x_ts.ko \
         $(COMMON_PATH)/prebuilt/bin/reboot-recovery.sh:root/sbin/reboot-recovery.sh \
 	$(call find-copy-subdir-files,*,$(COMMON_PATH)/rootdir,root)
 
@@ -92,10 +92,10 @@ PRODUCT_COPY_FILES += \
 
 #Cedarx lib's from 4.2
 #PRODUCT_COPY_FILES += \
-	$(call find-copy-subdir-files,*,$(COMMON_PATH)/prebuilt/lib/cedarx,system/lib)
+#	$(call find-copy-subdir-files,*,$(COMMON_PATH)/prebuilt/lib/cedarx,system/lib)
 	
 #Cedarx-Crack only
-#PRODUCT_COPY_FILES += \
+PRODUCT_COPY_FILES += \
 	$(COMMON_PATH)/prebuilt/lib/cedarx/libdemux_rmvb.so:system/lib/libdemux_rmvb.so \
 	$(COMMON_PATH)/prebuilt/lib/cedarx/librm.so:system/lib/librm.so \
 	$(COMMON_PATH)/prebuilt/lib/cedarx/libswa1.so:system/lib/libswa1.so \
@@ -150,8 +150,6 @@ PRODUCT_PACKAGES += \
 	libOmxVdec \
 	libOmxVenc \
 	libaw_h264enc \
-	libsunxi_alloc \
-	libion_alloc
 	
 # CedarX libraries
 PRODUCT_PACKAGES += \
